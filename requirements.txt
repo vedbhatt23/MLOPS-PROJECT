@@ -32,5 +32,6 @@ transformers
 
 # If you're using Jupyter notebooks
 jupyter
-
+nbconvert
 # Any other packages specific to your training or deployment
+
