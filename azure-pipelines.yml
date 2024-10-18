@@ -1,0 +1,39 @@
+trigger:
+  branches:
+    include:
+      - main  # Adjust branch if necessary
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+  displayName: 'Install dependencies'
+
+- script: |
+    python your_train_script.py  # Replace with your training script
+  displayName: 'Train the model'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'path_to_your_model'  # Adjust based on where the model is saved
+    artifactName: 'model'
+    publishLocation: 'pipeline'
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: '<Your_Azure_Subscription>'
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az webapp deployment source config-zip \
+        --resource-group <Your_Resource_Group> \
+        --name <Your_WebApp_Name> \
+        --src path_to_zip  # Deploy model via Azure App Services
+
