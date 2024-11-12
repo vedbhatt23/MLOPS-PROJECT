@@ -32,7 +32,7 @@ steps:
     azureSubscription: 'azure-resource-connection'  # Your Azure subscription
     appName: 'sign-language-app'  # Name of your Azure Web App
     package: '$(System.DefaultWorkingDirectory)'  # Path to the app's root directory
-    deploymentMethod: 'auto'
+    deploymentMethod: 'zipDeploy'
 
 # Step 4: (Optional) Publish artifacts for later use
 - task: PublishBuildArtifacts@1
