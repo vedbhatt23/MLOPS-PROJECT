@@ -17,17 +17,20 @@ steps:
     versionSpec: '3.x'  # Use Python version 3.x
     addToPath: true
 
-# Step 2: Install dependencies from requirements.txt
+- script: |
+    pip install jsmin==3.0.0  # Install jsmin separately
+  displayName: 'Install jsmin'
+
+# Step 3: Install other dependencies from requirements.txt
 - script: |
     pip install --upgrade pip
     pip install -r requirements.txt
   displayName: 'Install Dependencies'
-
 # Step 3: Deploy Streamlit app to Azure Web App
 - task: AzureWebApp@1
   inputs:
     azureSubscription: 'azure-resource-connection'  # Your Azure subscription
-    appName: 'Sign Language Detectiob'  # Name of your Azure Web App
+    appName: 'sign-language-app'  # Name of your Azure Web App
     package: '$(System.DefaultWorkingDirectory)'  # Path to the app's root directory
     deploymentMethod: 'auto'
 
