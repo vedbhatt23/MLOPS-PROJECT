@@ -1,46 +1,44 @@
 trigger:
-- main  # Trigger the pipeline when changes are pushed to the 'main' branch
+- main  # Trigger the pipeline on push to the 'main' branch
 
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  # Define paths to model and other resources
+  # Path to the models and app script
   modelPath: 'models/best.pt'
-  appPath: 'streamlit_app/streamlit.py'  # Path to the Streamlit app script
+  appScript: 'streamlit_app/scripts.run.py'  # Path to your Streamlit app script
 
 steps:
+
+# Step 1: Set up Python environment
 - task: UsePythonVersion@0
   inputs:
     versionSpec: '3.x'  # Use Python version 3.x
     addToPath: true
 
+# Step 2: Install dependencies from requirements.txt
 - script: |
-    # Install required dependencies for the app using pip
+    pip install --upgrade pip
     pip install -r requirements.txt
   displayName: 'Install Dependencies'
 
-- task: CopyFiles@2
+# Step 3: Deploy Streamlit app to Azure Web App
+- task: AzureWebApp@1
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/app'
+    azureSubscription: 'azure-resource-connection'  # Your Azure subscription
+    appName: 'Sign Language Detectiob'  # Name of your Azure Web App
+    package: '$(System.DefaultWorkingDirectory)'  # Path to the app's root directory
+    deploymentMethod: 'auto'
 
+# Step 4: (Optional) Publish artifacts for later use
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/app'
-    ArtifactName: 'sign_language_app'
+    PathtoPublish: '$(Build.SourcesDirectory)'
+    ArtifactName: 'streamlit-app'
+    publishLocation: 'Container'
 
-- task: AzureWebAppContainer@1
-  inputs:
-    azureSubscription: 'azure-resource-connection'
-    appName: 'Sign Language Detection'
-    imageName: 'sign-language-app:latest'
-    containers: |
-      - image: 'sign-language-app:latest'
-
+# Step 5: Clean up Python environment (optional)
 - script: |
-    # Deploy the Streamlit app to Azure Web App using Docker or directly
-    docker build -t sign-language-app .
-    docker push sign-language-app
-  displayName: 'Deploy Streamlit App'
+    pip uninstall -y -r requirements.txt
+  displayName: 'Clean up Python environment'
