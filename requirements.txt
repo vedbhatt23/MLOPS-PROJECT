@@ -1,37 +1,5 @@
-# Essential Python packages
-numpy
-pandas
-scikit-learn
-matplotlib
-seaborn
-
-# Deep learning frameworks (choose based on what you're using)
-tensorflow
-torch
-torchvision
-
-# Computer vision libraries (for your sign language detection)
+streamlit
 opencv-python
-opencv-contrib-python
-
-# For working with YAML files
-PyYAML
-
-# DVC (for data version control)
-dvc
-
-# Azure SDK (for interaction with Azure services)
-azure-cli
-azureml-core
-
-# Web framework (if you’re deploying as a web app)
-flask
-
-# Hugging Face libraries (if you're using transformers or related tools)
-transformers
-
-# If you're using Jupyter notebooks
-jupyter
-nbconvert
-# Any other packages specific to your training or deployment
-
+ultralytics
+numpy
+jsmin==2.2.2
